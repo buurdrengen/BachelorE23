@@ -1,32 +1,26 @@
-using HiGHS
+# Problem: 
+# Min x + y 
+# s.t. 
+# 5 <= x + 2y <= 15
+# 6 <= 3x + 2y 
+# 0 <= x <= 4
+# 1 <= y
+# y in Z (y is integer)
 
-highs = Highs_create()
+using JuMP 
+using HiGHS 
 
-ret = Highs_setBoolOptionValue(highs,"log_to_console",false)
+m = Model(HiGHS.Optimizer)
 
-@assert ret == 0
+@variable(m, 0 <= x <= 4)
+@variable(m, 1 <= y, Int)
 
-Highs_addCol(highs, 1.0, 0.0, 4.0, 0, C_NULL, C_NULL)
-Highs_addCol(highs, 1.0, 1.0, Inf, 0, C_NULL, C_NULL)
+@objective(m, Min, (x + y))
+@constraint(m, 5 <= (x + 2*y) <= 15)
+@constraint(m, 6 <= (3*x + 2*y))
 
-Highs_changeColIntegrality(highs, 1, kHighsVarTypeInteger)
+optimize!(m)
 
-Highs_changeObjectiveSense(highs, kHighsObjSenseMinimize)
-
-senseP = Ref{Cint}(0)
-
-Highs_getObjectiveSense(highs,senseP)
-
-senseP[] == kHighsObjSenseMinimize
-
-Highs_addRow(highs, 5.0, 15.0, 2,Cint[0,1],[1.0,2.0])
-
-Highs_addRow(highs, 6.0, Inf, 2, Cint[0,1],[3.0,2.0])
-
-Highs_run(highs)
-
-col_value = zeros(Cdouble,2);
-
-Highs_getSolution(highs, col_value, C_NULL, C_NULL, C_NULL)
-
-col_value
+println("Objective value: ",JuMP.objective_value(m))
+println("x: ",JuMP.value(x))
+println("y: ",JuMP.value(y))
