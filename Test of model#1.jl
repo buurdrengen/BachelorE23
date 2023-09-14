@@ -9,11 +9,6 @@ m = Model(HiGHS.Optimizer);
 
 @objective(m, Max, sum(X[i,j] for i =1:2, j=1:5) )
 
-@constraint(m, X[1,2] + X[2,2] <= 230)
-@constraint(m, X[1,3] + X[2,3] <= 230)
-@constraint(m, X[1,4] + X[2,4] <= 230)
-@constraint(m, X[1,5] <= 230)
-
 @constraint(m, X[1,1] + 2*X[2,1] <= 230)
 @constraint(m, 3*X[1,2] + 5*X[2,2] <= 230)
 @constraint(m, 7*X[1,3] + 17*X[2,3] <= 230)

@@ -1,7 +1,7 @@
 # 
 using JuMP
 using GLPK
-M = 100
+M = 34
 m = Model(GLPK.Optimizer);
 @variable(m, x[1:3] >= 0)
 @variable(m, y[1:4], Bin)
