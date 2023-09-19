@@ -21,4 +21,4 @@ optimize!(m)
 println("Objective value: ",JuMP.objective_value(m))
 println(solution_summary(m; verbose = true))
 
-latex_formulation(m)
+#latex_formulation(m)

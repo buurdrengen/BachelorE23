@@ -17,5 +17,3 @@ optimize!(model) # Optimizing the model (using the simplex algorithm)
 println("Objective value (maximum profit in 1000 DKK) is: ",JuMP.objective_value(model))
 println("The number of doors (x1) should be: ",JuMP.value(x[1]))
 println("The number of windows (x2) should be: ",JuMP.value(x[2]))
-
-
