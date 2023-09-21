@@ -15,4 +15,4 @@ print(total_completion_time)
 
 best_order = np.array([])
 jobs_list = np.arange(1,71)
-perm = list(permutations(jobs_list))
+#perm = list(permutations(jobs_list))
