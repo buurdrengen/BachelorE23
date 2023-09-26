@@ -16,4 +16,5 @@ def create_permutations(list_jobs, job):
             list_permutations = np.append(list_permutations,perm)
             #print(list_permutations)
         return list_permutations
-print(create_permutations(np.array([1,2]),3))
+print(create_permutations(np.array([1,2]),3))   
+
