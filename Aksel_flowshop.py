@@ -1,40 +1,48 @@
 ## Aksel - flowshop work
-import pandas as pd
 import numpy as np 
 from itertools import permutations
-import math
+import time 
+
 p1 = np.array([5, 3, 3, 1, 10])
 p2 = np.array([10, 5, 3, 2, 10])
 
 no_p1 = 3
 no_p2 = 5
 
-permatu = list(permutations(joblist))
-all_jobs = np.concatenate([np.tile(p2,(no_p2,1)),np.tile(p1,(no_p1,1))])
-joblist = np.arange(1,len(all_jobs)+1)
+all_jobs = np.concatenate([np.tile(p1,(no_p1,1)),np.tile(p2,(no_p2,1))])
 
-
-
-print(all_jobs)
-print(permatu)
-
-def solve_problem(total_jobs)
+def solve_problem(total_jobs):
+        start = time.time()
+        joblist = np.arange(0,len(total_jobs))
+        #print(joblist)
         permutation = list(permutations(joblist))
         c_max = np.inf
+        best_order = np.array([])
         for i in permutation:
             current_c_max = compute_makespan(total_jobs, i)
             if current_c_max < c_max:
                 c_max = current_c_max
                 best_order = i 
                 print(c_max, best_order)
+            #elif current_c_max = c_max:
         c_max = c_max + 60
+        end = time.time()
+        runtime = end - start 
+        print("Time taken to run is: ", runtime, "seconds")
         return best_order, c_max
     
-def compute_makespan(total_jobs, permutation)
+def compute_makespan(total_jobs, permutation):
         "Compute makespan"
+        col = np.array([])
+        last_row = total_jobs[permutation[-1]][1:5]
         for j in permutation: 
-            x1 = np.sum(all_jobs[j],axis=0)
-            x2 = np.sum(all_jobs[j],axis=0) + all_jobs[j][j-1]
+                col = np.append(col,total_jobs[j][0])
+                #print(col)
+        makespan = np.sum(col) + np.sum(last_row)
+        return makespan 
+
+print(solve_problem(all_jobs))
+#print(compute_makespan(all_jobs,joblist))
 
 # # Defining the 2 products with time at the 5 stations. 
 # p1 = np.array([5, 3, 3, 1, 10])
