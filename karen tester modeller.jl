@@ -14,13 +14,11 @@ m = Model(HiGHS.Optimizer);
 @constraint(m, 3*X[1] + 3*X[2] <= 230)
 @constraint(m, X[1] + 2*X[2] <= 230)
 @constraint(m, 10*X[1] + 10*X[2] <= 230)
-@constraint(m, X[1] <= 30)
-@constraint(m, X[2] <= 40)
 
 println(m)
 optimize!(m)
 
 println("Objective value: ",JuMP.objective_value(m))
 println(solution_summary(m; verbose = true))
-
+ 
 # latex_formulation(m)
