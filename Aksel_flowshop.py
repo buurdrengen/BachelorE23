@@ -42,7 +42,7 @@ def compute_makespan(total_jobs, permutation):
         return makespan 
 
 print(solve_problem(all_jobs))
-#print(compute_makespan(all_jobs,joblist))
+#print(compute_makespan(all_jobs,joblist))asd
 
 # # Defining the 2 products with time at the 5 stations. 
 # p1 = np.array([5, 3, 3, 1, 10])
