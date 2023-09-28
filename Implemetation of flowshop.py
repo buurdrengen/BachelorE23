@@ -9,7 +9,9 @@ p2 = np.array([10, 5, 3, 2, 10])
 no_p1 = 3                                                                       # 1D reflection
 no_p2 = 4                                                                       # 2D reflection (wolter)
 
-all_jobs = np.concatenate([np.tile(p1,(no_p1,1)),np.tile(p2,(no_p2,1))])        # Colleting all products in one array
+all_jobs = np.concatenate([np.tile(p2,(no_p2,1)),np.tile(p1,(no_p1,1))])  
+#joblist = np.arange(0,len(all_jobs))                                             # Colleting all products in one array
+
 
 def solve_problem(total_jobs):
         # Describtion 
@@ -34,13 +36,16 @@ def solve_problem(total_jobs):
 def compute_makespan(total_jobs, permutation):
         # Describtion 
         "Compute makespan"
-        col = np.array([])                                                      # Making an empty array for station 1
+        col = np.array([])
+        col2 = np.array([np.sum(all_jobs[permutation[0]][0:4])])                                                      # Making an empty array for station 1
         last_row = total_jobs[permutation[-1]][1:5]                             # Saving last row in matrix for total products, substracting station 1
         for j in permutation: 
-                col = np.append(col,total_jobs[j][0])                           # Saving first element for each product in current combination
-                #print(col)
-        makespan = np.sum(col) + np.sum(last_row)                               # Calculating the sum of all elements in first station adding the  
-        return makespan                                                         # sum of the last row in the current combination
+                col = np.append(col,total_jobs[j][0])
+                col2 = np.append(col2, all_jobs[j][-1])                           # Saving first element for each product in current combination
+                #print(col2)
+        makespan_col2 = np.sum(col2)
+        #makespan = np.sum(col) + np.sum(last_row)                                # Calculating the sum of all elements in first station adding the  
+        return makespan_col2                                                         # sum of the last row in the current combination
 
 print(solve_problem(all_jobs))
 #print(compute_makespan(all_jobs,joblist))
