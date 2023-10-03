@@ -1,9 +1,9 @@
 ## Test of model 
 
-using JuMP
-using HiGHS
+using Pkg
+Pkg.add("Gurobi")
 
-m = Model(HiGHS.Optimizer); 
+m = Model(Gurobi.Optimizer); 
 
 @variable(m, X[1:2] >= 0) 
 
@@ -14,6 +14,7 @@ m = Model(HiGHS.Optimizer);
 @constraint(m, 3*X[1] + 3*X[2] <= 230)
 @constraint(m, X[1] + 2*X[2] <= 230)
 @constraint(m, 10*X[1] + 10*X[2] <= 230)
+@constraint 
 
 println(m)
 optimize!(m)

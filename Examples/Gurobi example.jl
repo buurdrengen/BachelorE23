@@ -1,8 +1,8 @@
 ############################
 # For adding Gurobi to julia
 ##
-# using Pkg
-# Pkg.add("Gurobi")
+using Pkg
+Pkg.add("Gurobi")
 ############################
 
 # Problem: 
