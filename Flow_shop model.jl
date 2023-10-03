@@ -1,2 +1,3 @@
-using Pkg
-Pkg.add("Gurobi")
+using JuMP 
+using Gurobi 
+
