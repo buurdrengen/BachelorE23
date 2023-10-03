@@ -1,7 +1,7 @@
 ## Test of model 
 
-using Pkg
-Pkg.add("Gurobi")
+using JuMP
+using Gurobi
 
 m = Model(Gurobi.Optimizer); 
 
@@ -14,7 +14,8 @@ m = Model(Gurobi.Optimizer);
 @constraint(m, 3*X[1] + 3*X[2] <= 230)
 @constraint(m, X[1] + 2*X[2] <= 230)
 @constraint(m, 10*X[1] + 10*X[2] <= 230)
-@constraint 
+@constraint(m, X[1]>=3)
+@constraint(m, X[2]>=4)
 
 println(m)
 optimize!(m)
