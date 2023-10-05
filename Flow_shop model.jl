@@ -25,18 +25,18 @@ n = 1:(J1+J2) # index i og j
 
 J = 1:length(n)-1
 R = 1:length(m)-1
-@constraint(model, [j in J, r in R], sum(p[r,i]*z[i,j+1]+y[j+1,r]+x[j+1,r] for i in n) == y[j,r]+sum(p[r+1,i]*z[i,j]+x[j+1,r+1] for i in n))
+@constraint(model, [j in J, r in R], sum(p[r,i]*z[i,j+1] for i in n) + y[j+1,r] + x[j+1,r] == y[j,r] + sum(p[r+1,i]*z[i,j] for i in n) + x[j+1,r+1])
 
-@constraint(model, sum(sum(p[M,i]*z[i,j] for i in n) for j in n)+sum(x[j,M] for j in n) == c_max)
+@constraint(model, sum(sum(p[M,i]*z[i,j] for i in n) for j in n) + sum(x[j,M] for j in n) == c_max)
 
 K = 2:length(m)
-@constraint(model, [k in K], sum(sum(p[r,i]*z[i,1] for i in n) for r in m) == x[1,k])
+@constraint(model, [k in K], sum(sum(p[r,i]*z[i,1] for i in n) for r in R) == x[1,k])
 
-K = 1:length(m)-1
-@constraint(model, [k in K], y[1,k] == 0)
+K1 = 1:length(m)-1
+@constraint(model, [k in K1], y[1,k] == 0)
 
 println(model)
 optimize!(model)
 
 println("Objective value: ",JuMP.objective_value(model))
-#println(solution_summary(model; verbose = true))
+println(solution_summary(model; verbose = true))
