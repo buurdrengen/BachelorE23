@@ -10,7 +10,7 @@ no_p1 = 3                                                                       
 no_p2 = 4                                                                       # 2D reflection (wolter)
 
 all_jobs = np.concatenate([np.tile(p2,(no_p2,1)),np.tile(p1,(no_p1,1))])        # Colleting all products in one array
-
+#print(all_jobs)
 
 def solve_problem(total_jobs):
         # Describtion 
@@ -32,15 +32,24 @@ def solve_problem(total_jobs):
         return best_order, c_max
     
 def compute_makespan(total_jobs, permutation):
-        "Compute makespan"
-        col2 = np.array([np.sum(all_jobs[permutation[0]][0:4])])                  # Making an empty array for station 1
-        for j in permutation:                                                     # Saving last row in matrix for total products, substracting station 1
-                col2 = np.append(col2, all_jobs[j][-1])                           # Saving first element for each product in current combination
-        makespan_col2 = np.sum(col2)                                              # Calculating the sum of all elements in first station adding the  
-        return makespan_col2                                                      # sum of the last row in the current combination
-
+        "Compute makespan for CHEXS production line "
+        "Input: Matrix of products and permutation list "
+        "Output: Makespan in days "
+        first_row = np.sum(all_jobs[permutation[0]])
+        next_finish = first_row
+        for j in permutation[1:]:
+                next_row = np.sum(all_jobs[j][0:4]) + all_jobs[permutation[j-1]][0]
+                if next_row < first_row:
+                      next_finish = next_finish + all_jobs[permutation[j]][-1]
+                elif next_row > first_row: 
+                      next_finish = next_finish + (next_row-first_row) + all_jobs[permutation[j]][-1]
+                else:
+                      next_finish = next_finish + all_jobs[permutation[j]][-1]
+                first_row = next_finish
+        makespan = next_finish                                                                        
+        return makespan
+                                             
 print(solve_problem(all_jobs))
-
 
 
 
