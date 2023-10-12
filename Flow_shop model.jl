@@ -4,16 +4,16 @@ using Plots
 
 model = Model(Gurobi.Optimizer); 
 
-No_products = [[1,2] [2,3] [3,4] [4,5] [5,6] [6,7] [10,11]]
+No_products = [[1,2] [2,3] [3,4] [4,5] [5,6] [6,7] [7,8]]
 #  optimizer(No_products)
-# model
+# model  
 # function optimizer(No_products)
 
 p1 = [5, 3, 3, 1, 10]  
 p2 = [10, 5, 3, 2, 10]
 
 obj_value = []
-
+sol_time = []
 
 for t in 1:size(No_products,2)
     unregister(model, :x)
@@ -31,7 +31,7 @@ for t in 1:size(No_products,2)
 
     @variable(model, x[n,m] >= 0) 
     @variable(model, y[n,m] >= 0) 
-    z = @variable(model, z[n,n], Bin)
+    @variable(model, z[n,n], Bin)
     @variable(model, c_max >= 0)
 
     @objective(model, Min, c_max+60) 
@@ -55,10 +55,11 @@ for t in 1:size(No_products,2)
     optimize!(model)
     
     obj_value = append!(obj_value,JuMP.objective_value(model))
+    sol_time = append!(sol_time,solve_time(model))
     #println("Objective value: ",JuMP.objective_value(model))
     z_opt = value.(z)
-    # order = [key for key in eachindex(z) if z_opt[key] > 0.5]
-    order = z[z_opt .> 0.5]
+    order = [key for key in eachindex(z) if z_opt[key] > 0.5]
+    #order = z[z_opt .> 0.5]
     println(order)
 end 
 #     return order
@@ -66,7 +67,8 @@ end
 
 #findall(x->x==1, z)
 
-# println(obj_value)
+println(obj_value)
+println(sol_time)
 
 #println(solution_summary(model; verbose = true))
 
