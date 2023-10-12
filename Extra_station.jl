@@ -13,7 +13,10 @@ p = hcat(repeat(p1, inner = (1,J1)), repeat(p2, inner =(1,J2)))
 m = 1:length(p1) # index k
 M = length(p1)
 n = 1:(J1+J2) # index i og j
-
+unregister(model, :x)
+unregister(model, :y)
+unregister(model, :z)
+unregister(model, :c_max)
 
 @variable(model, x[n,m] >= 0) 
 @variable(model, y[n,m] >= 0) 
@@ -41,6 +44,6 @@ println(model)
 optimize!(model)
 
 println("Objective value: ",JuMP.objective_value(model))
-println(solution_summary(model; verbose = true))  
+#println(solution_summary(model; verbose = true))  
 
 #x_df = JuMP.variable_by_name(model, x)

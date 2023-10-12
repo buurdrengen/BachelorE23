@@ -13,9 +13,10 @@ print(location)
 
 name = []
 for i in location:
-    if 0 <= location[i] <= 2:
+    #print(i)
+    if 0 <= i <= 2:
         name.append('1D')
-    elif 3 <= location[i] <= 6:
+    elif 3 <= i <= 7:
         name.append('2D')
     
 print(name)

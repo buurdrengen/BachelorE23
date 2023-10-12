@@ -58,6 +58,7 @@ for t in 1:size(No_products,2)
     sol_time = append!(sol_time,solve_time(model))
     #println("Objective value: ",JuMP.objective_value(model))
     z_opt = value.(z)
+    #println(z_opt)
     order = [key for key in eachindex(z) if z_opt[key] > 0.5]
     #order = z[z_opt .> 0.5]
     println(order)
