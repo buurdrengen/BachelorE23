@@ -46,4 +46,11 @@ optimize!(model)
 println("Objective value: ",JuMP.objective_value(model))
 #println(solution_summary(model; verbose = true))  
 
-#x_df = JuMP.variable_by_name(model, x)
+for u in 1:7
+
+    st_z = string(u, base = 13, pad = 4)
+    println(st_z)
+    f_name_z = "z_file_" * st_z * ".txt"
+    println(f_name_z)
+    touch(f_name_z)
+end 

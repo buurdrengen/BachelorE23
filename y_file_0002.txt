@@ -1,0 +1,9 @@
+2-dimensional DenseAxisArray{Float64,2,...} with index sets:
+    Dimension 1, 1:5
+    Dimension 2, 1:5
+And data, a 5×5 Matrix{Float64}:
+ 0.0  0.0  0.0  0.0  0.0
+ 5.0  0.0  0.0  0.0  0.0
+ 0.0  2.0  0.0  0.0  0.0
+ 2.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  2.0  0.0  0.0

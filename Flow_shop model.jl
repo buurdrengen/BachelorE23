@@ -58,10 +58,34 @@ for t in 1:size(No_products,2)
     sol_time = append!(sol_time,solve_time(model))
     #println("Objective value: ",JuMP.objective_value(model))
     z_opt = value.(z)
+    x_opt = value.(x)
+    y_opt = value.(y)
     #println(z_opt)
-    order = [key for key in eachindex(z) if z_opt[key] > 0.5]
+    #order = [key for key in eachindex(z) if z_opt[key] > 0.5]
     #order = z[z_opt .> 0.5]
-    println(order)
+    #println(order)
+
+    # Save x, y and z in .txt files 
+    st_f_names = string(t, base = 13, pad = 4)
+    f_name_z = "z_file_" * st_f_names * ".txt"
+    f_name_x = "x_file_" * st_f_names * ".txt"
+    f_name_y = "y_file_" * st_f_names * ".txt"
+    touch(f_name_z) #Create .txt file in each loop
+    touch(f_name_x)
+    touch(f_name_y)
+
+    # Printing the results to each file
+    open(f_name_z,"w") do f
+        print(f,z_opt)
+    end 
+
+    open(f_name_x,"w") do f
+        print(f, x_opt)
+    end 
+
+    open(f_name_y,"w") do f
+        print(f,y_opt)
+    end 
 end 
 #     return order
 # end
