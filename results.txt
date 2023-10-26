@@ -1,4 +1,31 @@
-Makespan = Any[212.0]
-["1D", "1D", "2D", "2D", "2D", "2D", "1D", "2D", "2D", "1D", "1D", "1D", "2D", "2D"]
-47.0
-Any[0.01100015640258789]
+RESULTS OF 7 PRODUCTS
+Makespan = Any[142.0]
+Order = ["1D", "1D", "1D", "2D", "2D", "2D", "2D"]
+Profit = 23.5
+Solution time = Any[0.007999897003173828]
+
+X VALUES
+2-dimensional DenseAxisArray{Float64,2,...} with index sets:
+    Dimension 1, 1:7
+    Dimension 2, 1:5
+And data, a 7×5 Matrix{Float64}:
+ 0.0   5.0   8.0  11.0  12.0
+ 0.0   7.0   7.0   9.0   0.0
+ 0.0   0.0   7.0   9.0   0.0
+ 0.0   4.0   0.0   2.0   0.0
+ 0.0  12.0  13.0  14.0   0.0
+ 0.0   3.0   5.0   6.0   0.0
+ 0.0   0.0   2.0  10.0   0.0
+
+Y VALUES
+2-dimensional DenseAxisArray{Float64,2,...} with index sets:
+    Dimension 1, 1:7
+    Dimension 2, 1:5
+And data, a 7×5 Matrix{Float64}:
+ 0.0  0.0  0.0  0.0  0.0
+ 5.0  0.0  0.0  0.0  0.0
+ 3.0  7.0  0.0  0.0  0.0
+ 0.0  1.0  0.0  6.0  0.0
+ 7.0  0.0  0.0  0.0  0.0
+ 5.0  0.0  0.0  2.0  0.0
+ 0.0  0.0  7.0  0.0  0.0
