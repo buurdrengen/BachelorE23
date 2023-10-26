@@ -6,11 +6,11 @@ import time
 p1 = np.array([5, 3, 3, 1, 10])                                                 # Days for each station (step)
 p2 = np.array([10, 5, 3, 2, 10])
 
-no_p1 = 5                                                                       # 1D reflection
-no_p2 = 5                                                                       # 2D reflection (wolter)
+no_p1 = 3                                                                       # 1D reflection
+no_p2 = 4                                                                       # 2D reflection (wolter)
 
 all_jobs = np.concatenate([np.tile(p2,(no_p2,1)),np.tile(p1,(no_p1,1))])        # Colleting all products in one array
-#print(all_jobs)
+print(np.shape(all_jobs))
 
 def solve_problem(total_jobs):
         # Describtion 

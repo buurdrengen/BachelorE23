@@ -20,7 +20,7 @@ for t in 1:size(No_products,2)
     unregister(model, :y)
     unregister(model, :z)
     unregister(model, :c_max)
-    println(t)
+    #println(t)
 
     p = hcat(repeat(p1, inner = (1,No_products[1,t])), repeat(p2, inner =(1,No_products[2,t])))
     
@@ -54,12 +54,14 @@ for t in 1:size(No_products,2)
     #println(model)
     optimize!(model)
     
+    
     obj_value = append!(obj_value,JuMP.objective_value(model))
     sol_time = append!(sol_time,solve_time(model))
     #println("Objective value: ",JuMP.objective_value(model))
     z_opt = value.(z)
     x_opt = value.(x)
     y_opt = value.(y)
+    print(y_opt)
     #println(z_opt)
     #order = [key for key in eachindex(z) if z_opt[key] > 0.5]
     #order = z[z_opt .> 0.5]
@@ -86,14 +88,15 @@ for t in 1:size(No_products,2)
     open(f_name_y,"w") do f
         print(f,y_opt)
     end 
+    #println(value.(y))
 end 
 #     return order
 # end
 
 #findall(x->x==1, z)
 
-println(obj_value)
-println(sol_time)
+#println(obj_value)
+#println(sol_time)
 
 #println(solution_summary(model; verbose = true))
 
