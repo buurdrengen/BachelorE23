@@ -6,8 +6,8 @@ model = Model(Gurobi.Optimizer);
 
 No_products = [[1,2] [2,3] [3,4] [4,5] [5,6] [6,7] [7,8]]
 
-number_1D = 3
-number_2D = 4
+number_1D = 6
+number_2D = Int.(ceil(number_1D*4/3))
 
 
 p1 = [5, 3, 3, 1, 10]  
@@ -111,16 +111,16 @@ function flowshop(p1,p2,no_1D,no_2D)
     end 
 
     #Profit
-    #profit = 2.5*no_1D+4*no_2D
+    profit = 2.5*no_1D+4*no_2D
     #profit = append!(profit,pro)
 
     # Order of 2D and 1D
     z_order = julia_translate_z("z_file.txt", no_1D)
 
     open(f_name_results,"w") do f
-        println(f,obj_value)
+        println(f, "Makespan = " , obj_value)
         println(f,z_order)
-        #println(f,profit)
+        println(f,profit)
         println(f,sol_time)
     end 
 
@@ -133,6 +133,7 @@ function flowshop(p1,p2,no_1D,no_2D)
     # # Close the file
     # close(file)
     #end
+return
 end
 
 
