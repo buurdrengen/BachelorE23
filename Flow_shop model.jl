@@ -13,7 +13,7 @@ number_2D = 4
 p1 = [5, 3, 3, 1, 10]  
 p2 = [10, 5, 3, 2, 10]
 
-# flowshop(p1,p2,number_1D,number_2D)
+flowshop(p1,p2,number_1D,number_2D)
 
 function flowshop(p1,p2,no_1D,no_2D)
 
@@ -133,7 +133,6 @@ function flowshop(p1,p2,no_1D,no_2D)
     # # Close the file
     # close(file)
     #end
-return
 end
 
 
