@@ -40,8 +40,9 @@ K = 2:length(m)
 K1 = 1:length(m)-1
 @constraint(model, [k in K1], y[1,k] == 0)
 
-println(model)
+#println(model)
 optimize!(model)
+println(value.(y))
 
 println("Objective value: ",JuMP.objective_value(model))
 #println(solution_summary(model; verbose = true))  

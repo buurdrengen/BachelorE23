@@ -5,24 +5,43 @@ using Plots
 model = Model(Gurobi.Optimizer); 
 
 No_products = [[1,2] [2,3] [3,4] [4,5] [5,6] [6,7] [7,8]]
-#  optimizer(No_products)
-# model  
-# function optimizer(No_products)
+
+number_1D = 3
+number_2D = 4
+
 
 p1 = [5, 3, 3, 1, 10]  
 p2 = [10, 5, 3, 2, 10]
 
-obj_value = []
-sol_time = []
+# flowshop(p1,p2,number_1D,number_2D)
 
-for t in 1:size(No_products,2)
+function flowshop(p1,p2,no_1D,no_2D)
+
+    obj_value = []
+    sol_time = []
+    profit = []
+
+    # Specify the filename
+    filename = "Order.txt"
+
+    # Open the file in write mode (truncate existing content)
+    file = open(filename, "w")
+    close(file)
+    # unregister(model, :x)
+    # unregister(model, :y)
+    # unregister(model, :z)
+    # unregister(model, :c_max)
+
+    total_products = no_1D + no_2D
+
+    #for t in 1:size(No_products,2)
+
     unregister(model, :x)
     unregister(model, :y)
     unregister(model, :z)
     unregister(model, :c_max)
-    println(t)
-
-    p = hcat(repeat(p1, inner = (1,No_products[1,t])), repeat(p2, inner =(1,No_products[2,t])))
+    
+    p = hcat(repeat(p1, inner = (1,no_1D)), repeat(p2, inner =(1,no_2D)))
     
     m = 1:length(p1) # index k
     M = length(p1)
@@ -45,13 +64,18 @@ for t in 1:size(No_products,2)
 
     @constraint(model, sum(sum(p[M,i]*z[i,j] for i in n) for j in n) + sum(x[j,M] for j in n) == c_max)
 
-    K = 2:length(m)
-    @constraint(model, [k in K], sum(sum(p[r,i]*z[i,1] for i in n) for r in R) == x[1,k])
+    # K = 2:length(m)
+    # @constraint(model, [k in K], sum(sum(p[r,i]*z[i,1] for i in n) for r in R) == x[1,k])
+
+    @constraint(model, sum(sum(p[r,i]*z[i,1] for i in n) for r in 1:1)== x[1,2])
+    @constraint(model, sum(sum(p[r,i]*z[i,1] for i in n) for r in 1:2) == x[1,3])
+    @constraint(model, sum(sum(p[r,i]*z[i,1] for i in n) for r in 1:3) == x[1,4])
+    @constraint(model, sum(sum(p[r,i]*z[i,1] for i in n) for r in 1:4) == x[1,5])
+
 
     K1 = 1:length(m)-1
     @constraint(model, [k in K1], y[1,k] == 0)
 
-    #println(model)
     optimize!(model)
     
     obj_value = append!(obj_value,JuMP.objective_value(model))
@@ -60,19 +84,18 @@ for t in 1:size(No_products,2)
     z_opt = value.(z)
     x_opt = value.(x)
     y_opt = value.(y)
-    #println(z_opt)
-    #order = [key for key in eachindex(z) if z_opt[key] > 0.5]
-    #order = z[z_opt .> 0.5]
-    #println(order)
+    println(y_opt)
 
-    # Save x, y and z in .txt files 
-    st_f_names = string(t, base = 13, pad = 4)
-    f_name_z = "z_file_" * st_f_names * ".txt"
-    f_name_x = "x_file_" * st_f_names * ".txt"
-    f_name_y = "y_file_" * st_f_names * ".txt"
+    # Save results in .txt files 
+    #st_f_names = string(t, base = 13, pad = 4)
+    f_name_z = "z_file.txt"
+    f_name_x = "x_file.txt"
+    f_name_y = "y_file.txt"
+    f_name_results = "results.txt"
     touch(f_name_z) #Create .txt file in each loop
     touch(f_name_x)
     touch(f_name_y)
+    touch(f_name_results)
 
     # Printing the results to each file
     open(f_name_z,"w") do f
@@ -86,16 +109,41 @@ for t in 1:size(No_products,2)
     open(f_name_y,"w") do f
         print(f,y_opt)
     end 
-end 
-#     return order
-# end
 
-#findall(x->x==1, z)
+    #Profit
+    #profit = 2.5*no_1D+4*no_2D
+    #profit = append!(profit,pro)
 
-println(obj_value)
-println(sol_time)
+    # Order of 2D and 1D
+    z_order = julia_translate_z("z_file.txt", no_1D)
 
-#println(solution_summary(model; verbose = true))
+    open(f_name_results,"w") do f
+        println(f,obj_value)
+        println(f,z_order)
+        #println(f,profit)
+        println(f,sol_time)
+    end 
+
+    # Open the file in append mode
+    # file = open(filename, "a")
+    
+    # # Write the array to the file
+    # println(file, "$t = ", z_order)
+
+    # # Close the file
+    # close(file)
+    #end
+return
+end
+
+
+#println(model)
+# println(obj_value)
+# println(profit)
+# println(sol_time)
+# println
+
+
 
 # total_products = vec(sum(No_products, dims=1))
 # scatter(total_products,obj_value,label = ["Optimal number of days"],xlabel = ["Number of total products"],ylabel = ["Number of work days"])
