@@ -3,14 +3,15 @@ using Gurobi
 using Plots
 
 model = Model(Gurobi.Optimizer); 
-
-number_1D = 3
-number_2D = Int.(ceil(number_1D*4/3))
+total=108
+number_1D = floor(3*total/7)
+number_2D = Int.(ceil.(number_1D*4/3))
 
 p1 = [5, 3, 3, 1, 10]  
 p2 = [10, 5, 3, 2, 10]
 
-(antal,obj_value,p)=flowshop_function(p1,p2,number_1D,number_2D)
+
+(antal,obj_value,p,sol)=flowshop_function(p1,p2,number_1D,number_2D)
 
 function flowshop_function(p1,p2,no_1D,no_2D)
 
@@ -24,17 +25,20 @@ function flowshop_function(p1,p2,no_1D,no_2D)
     unregister(model, :y)
     unregister(model, :z)
     unregister(model, :c_max)
+    unregister(model, :q)
     
     p = hcat(repeat(p1, inner = (1,no_1D)), repeat(p2, inner =(1,no_2D)))
     
     m = 1:length(p1) # index k
     M = length(p1)
     n = 1:size(p,2) # index i og j
+    pq2 = 1:(length(m)-1)
 
     @variable(model, x[n,m] >= 0) 
     @variable(model, y[n,m] >= 0) 
     @variable(model, z[n,n], Bin)
     @variable(model, c_max >= 0)
+    @variable(model, q[n, pq2], Bin)
 
     @objective(model, Min, c_max+60) 
 
@@ -53,7 +57,13 @@ function flowshop_function(p1,p2,no_1D,no_2D)
     @constraint(model, sum(sum(p[r,i]*z[i,1] for i in n) for r in 1:4) == x[1,5])
 
     K1 = 1:length(m)-1
-    @constraint(model, [k in K1], y[1,k] == 0)
+    R2 = 1:length(m)-1
+    J1 = 1:length(n)
+    #@constraint(model, [k in K1], y[1,k] == 0)
+    @constraint(model, [j in n], x[j,1] == 0)
+    M1 = 1000
+    @constraint(model, [j in J1, r in R2], x[j,r + 1] <= M1*q[j,r])
+    @constraint(model, [j in J1, r in R2], y[j,r] <= M1*(1-q[j,r]))
 
     optimize!(model)
     
@@ -104,6 +114,6 @@ function flowshop_function(p1,p2,no_1D,no_2D)
         println(f,y_opt)
     end 
 
-return total_products, obj_value, profit
+return total_products, obj_value, profit, sol_time
 end
 

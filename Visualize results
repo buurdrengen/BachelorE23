@@ -2,9 +2,10 @@ using JuMP
 using Gurobi 
 using Plots
 
+
 model = Model(Gurobi.Optimizer); 
 
-number_1D = [1,2,3,4,5,6,7,8,9,10]
+number_1D = [1,2,3,4,5,6,7,8,9,10,16,22,28,34,40,46]
 number_2D = Int.(ceil.(number_1D*4/3))
 
 p1 = [5, 3, 3, 1, 10]  
@@ -13,75 +14,110 @@ p2 = [10, 5, 3, 2, 10]
 num = []
 make = []
 pro = []
+sol = []
 for i in 1:size(number_1D)[1]
-    (number, makespan, profit)=flowshop_function(p1,p2,number_1D[i],number_2D[i])
+    (number, makespan, profit, sol_time)=flowshop_function(p1,p2,number_1D[i],number_2D[i])
     num = append!(num, number)
     make = append!(make, makespan)
     pro = append!(pro, profit)
+    sol = append!(sol, sol_time)
 end 
 println(num)
 println(make)
 println(pro)
+println(sol)
 
 # Number of products and makespan
 # Calculating slope and intersection for (num, make)
-A = ones(10,2)
+A = ones(length(number_1D),2)
 A[:,1] = num
 b = make
 K = inv(transpose(A)*A)*transpose(A)*b
 
 # Function of number of products in five years 
-x = (230*5 - K[2])/K[1]
+num_products = (230*5 - K[2])/K[1]
 
-scatter(
+product_makespan = scatter(
     num,make, 
     color = "blue", 
-    xticks = 0:25,
-    yticks = 0:20:350,
-    label = ["Optimal number of days"],
-    xlabel = ["Number of total products"],
-    ylabel = ["Number of work days"])
-x = 1:25
-plot!(K[1].*x.+K[2], label = "Regression")
+    # xticks = 0:110,
+    # yticks = 0:20:1150,
+    xlabel = "Number of total products",
+    ylabel = "Makespan [Days]",
+    label = "Optimal number of days",
+    fmt = :png)
+x = 1:110
+plot!(K[1].*x.+K[2], label = "",color = "black")
+# scatter!(
+#     [num_products],[230], 
+#     markersize = 8, 
+#     color = "yellow", 
+#     label = "1 work year")
+png(product_makespan,"product_makespan_5_years")
+
+
+# Profit and makespan
+# Calculating slope and intersection for (make, pro)
+A2 = ones(length(number_1D),2)
+A2[:,1] = make
+b2 = pro
+K2 = inv(transpose(A2)*A2)*transpose(A2)*b2
+
+# Function of makespan and profit
+prof = K2[1]*230*5+K2[2]
+
+makespan_profit = scatter(
+    make,pro, 
+    color = "blue", 
+    # xticks = 0:20:350,
+    # yticks = 0:5:270,
+    label = "Optimal makespan",
+    xlabel = "Makespan [Days]",
+    ylabel = "Profit [Million DKK]",
+    fmt = :png)
+x = 1:230*5
+plot!(K2[1].*x.+K2[2], color = "black", label = "")
+# scatter!([230],[prof], markersize = 8, color = "yellow", label = "1 work year")
+png(makespan_profit,"makespan_profit_5_years")
 
 # Number of products and profit
 # Calculating slope and intersection for (num, pro)
-A = ones(10,2)
-A[:,1] = num
-b = pro
-K = inv(transpose(A)*A)*transpose(A)*b
+A1 = ones(length(number_1D),2)
+A1[:,1] = num
+b1 = pro
+K1 = inv(transpose(A1)*A1)*transpose(A1)*b1
 
-# Function of number of products in five years 
-x = (230*5 - K[2])/K[1]
+n = (prof - K1[2])/K1[1]
 
-scatter(
+Products_profit = scatter(
     num,pro, 
     color = "blue", 
-    xticks = 0:25,
-    yticks = 0:10:80,
-    label = ["Profit at optimal number of days"],
-    xlabel = ["Number of total products"],
-    ylabel = ["Profit"])
-x = 1:25
-plot!(K[1].*x.+K[2], label = "Regression")
+    # xticks = 0:50,
+    # yticks = 0:5:270,
+    xlabel = "Number of total products",
+    ylabel = "Profit [Millions DKK]",
+    label = "Profit at optimal number of days",
+    fmt = :png)
+x = 1:110
+plot!(
+    K1[1].*x.+K1[2],  
+    color = "black", 
+    label = "")
+# scatter!(
+#     [n],[prof], 
+#     markersize = 8, 
+#     color = "yellow", 
+#     label = "Optimal number of products in 1 work year")
+png(Products_profit,"products_profit5_years.png")
 
-# Number of products and makespan
-# Calculating slope and intersection for (num, make)
-A = ones(10,2)
-A[:,1] = num
-b = make
-K = inv(transpose(A)*A)*transpose(A)*b
-
-# Function of number of products in five years 
-x = (230*5 - K[2])/K[1]
-
-scatter(
-    num,make, 
-    color = "blue", 
-    xticks = 0:25,
-    yticks = 0:20:350,
-    label = ["Optimal number of days"],
-    xlabel = ["Number of total products"],
-    ylabel = ["Number of work days"])
-x = 1:25
-plot!(K[1].*x.+K[2], label = "Regression")
+# Solution time
+sol_plot = scatter(
+    num,sol, 
+    color = "green", 
+    # xticks = 0:50,
+    # yticks = 0:0.01:3,
+    xlabel = "Number of total products",
+    ylabel = "Solution time [s]",
+    label = "Solution time for each optimal value",
+    fmt = :png)
+png(sol_plot,"solution_time_5_years.png")
