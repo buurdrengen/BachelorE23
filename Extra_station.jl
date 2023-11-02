@@ -4,14 +4,17 @@ using Gurobi
 
 model = Model(Gurobi.Optimizer); 
 
-J1 = 3
-J2 = 4
+J1 = 4
+J2 = 5
 
-p1 = [5, 3, 3, 1, 10]  
+p1 = [5, 3, 3, 1, 10] 
 p2 = [10, 5, 3, 2, 10]
-p = hcat(repeat(p1, inner = (1,J1)), repeat(p2, inner =(1,J2)))
-m = 1:length(p1) # index k
-M = length(p1)
+p3 = [10, 5, 5, 2, 10]
+p4 = [5, 1, 1, 2, 2, 1, 10]
+p5 = [10, 1, 1, 4, 4, 2, 10]
+p = hcat(repeat(p4, inner = (1,J1)), repeat(p5, inner =(1,J2)))
+m = 1:length(p4) # index k
+M = length(p4)
 n = 1:(J1+J2) # index i og j
 pq1 = 1:(length(n)-1)
 pq2 = 1:(length(m)-1)
@@ -44,7 +47,9 @@ R = 1:length(m)-1
 @constraint(model, sum(sum(p[r,i]*z[i,1] for i in n) for r in 1:1) == x[1,2])
 @constraint(model, sum(sum(p[r,i]*z[i,1] for i in n) for r in 1:2) == x[1,3])
 @constraint(model, sum(sum(p[r,i]*z[i,1] for i in n) for r in 1:3) == x[1,4])
-@constraint(model, sum(sum(p[r,i]*z[i,1]    for i in n) for r in 1:4) == x[1,5])
+@constraint(model, sum(sum(p[r,i]*z[i,1] for i in n) for r in 1:4) == x[1,5])
+@constraint(model, sum(sum(p[r,i]*z[i,1] for i in n) for r in 1:5) == x[1,6])
+@constraint(model, sum(sum(p[r,i]*z[i,1] for i in n) for r in 1:6) == x[1,7])
 
 K1 = 1:length(m)-1
 R2 = 1:length(m)-1
@@ -77,10 +82,9 @@ println(y_opt)
 println(x_opt)
 println(z_opt)
 println(q_opt)
-println(y_opt[2,1])
-println(z_opt[:,1])
-#println( sum(p[5,i]*z_opt for i in n))
-println(p)
+println(sum(x_opt))
+println(sum(y_opt))
+
 f_name = "z-7product.txt"
 touch(f_name)
 open(f_name,"w") do f
@@ -88,7 +92,7 @@ open(f_name,"w") do f
 end 
 
 println("Objective value: ",JuMP.objective_value(model))
-println(julia_translate_z("z-7product.txt",3))
+println(julia_translate_z("z-7product.txt",4))
 
 #println(solution_summary(model; verbose = true))  
 
@@ -100,4 +104,3 @@ println(julia_translate_z("z-7product.txt",3))
 #         #print(cons)
 #     end
 # end 
-
