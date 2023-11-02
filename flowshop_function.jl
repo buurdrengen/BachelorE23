@@ -10,10 +10,9 @@ number_2D = Int.(ceil(number_1D*4/3))
 p1 = [5, 3, 3, 1, 10]  
 p2 = [10, 5, 3, 2, 10]
 
-flowshop(p1,p2,number_1D,number_2D)
+(antal,obj_value,p)=flowshop_function(p1,p2,number_1D,number_2D)
 
-
-function flowshop(p1,p2,no_1D,no_2D)
+function flowshop_function(p1,p2,no_1D,no_2D)
 
     obj_value = []
     sol_time = []
@@ -66,8 +65,15 @@ function flowshop(p1,p2,no_1D,no_2D)
     x_opt = value.(x)
     y_opt = value.(y)
 
-    #Profit
-    profit = 2.5*no_1D+4*no_2D
+    #Profit (In millions)
+    salary = (0.0006*8) # 600 kr/hour for one employee in one work day (8 hours)
+    cost_1D = (0.075+p1[1]*salary) + (0.15+p1[2]*salary) + (0.06+p1[3]*salary) + (0.25+p1[4]*salary) + (0.06+p1[5]*salary)
+    cost_2D = (0.15+p2[1]*salary) + (0.13+p2[2]*salary) + (0.06+p2[3]*salary) + (0.45+p2[4]*salary) + (0.06+p2[5]*salary)
+    price_1D = 2.5
+    price_2D = 4
+    profit_1D = price_1D-cost_1D
+    profit_2D = price_2D-cost_2D
+    profit = ((profit_1D*no_1D)+(profit_2D*no_2D))-(0.02+60*salary)
 
     # Save results in .txt files 
     f_name_z = "z_file.txt"
@@ -86,9 +92,9 @@ function flowshop(p1,p2,no_1D,no_2D)
 
     open(f_name_results,"w") do f
         println(f,"RESULTS OF $total_products PRODUCTS")
-        println(f, "Makespan = " , obj_value)
+        println(f, "Makespan = " , obj_value, " Days")
         println(f, "Order = " , z_order)
-        println(f, "Profit = " , profit)
+        println(f, "Profit = " , profit, " Million DKK")
         println(f, "Solution time = " , sol_time)
         println(f,"")
         println(f,"X VALUES")
@@ -98,10 +104,6 @@ function flowshop(p1,p2,no_1D,no_2D)
         println(f,y_opt)
     end 
 
-return
+return total_products, obj_value, profit
 end
 
-
-
-# total_products_plot = vec(sum(No_products, dims=1))
-# scatter(total_products,obj_value,label = ["Optimal number of days"],xlabel = ["Number of total products"],ylabel = ["Number of work days"])

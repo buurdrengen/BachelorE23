@@ -1,0 +1,87 @@
+using JuMP 
+using Gurobi 
+using Plots
+
+model = Model(Gurobi.Optimizer); 
+
+number_1D = [1,2,3,4,5,6,7,8,9,10]
+number_2D = Int.(ceil.(number_1D*4/3))
+
+p1 = [5, 3, 3, 1, 10]  
+p2 = [10, 5, 3, 2, 10]
+
+num = []
+make = []
+pro = []
+for i in 1:size(number_1D)[1]
+    (number, makespan, profit)=flowshop_function(p1,p2,number_1D[i],number_2D[i])
+    num = append!(num, number)
+    make = append!(make, makespan)
+    pro = append!(pro, profit)
+end 
+println(num)
+println(make)
+println(pro)
+
+# Number of products and makespan
+# Calculating slope and intersection for (num, make)
+A = ones(10,2)
+A[:,1] = num
+b = make
+K = inv(transpose(A)*A)*transpose(A)*b
+
+# Function of number of products in five years 
+x = (230*5 - K[2])/K[1]
+
+scatter(
+    num,make, 
+    color = "blue", 
+    xticks = 0:25,
+    yticks = 0:20:350,
+    label = ["Optimal number of days"],
+    xlabel = ["Number of total products"],
+    ylabel = ["Number of work days"])
+x = 1:25
+plot!(K[1].*x.+K[2], label = "Regression")
+
+# Number of products and profit
+# Calculating slope and intersection for (num, pro)
+A = ones(10,2)
+A[:,1] = num
+b = pro
+K = inv(transpose(A)*A)*transpose(A)*b
+
+# Function of number of products in five years 
+x = (230*5 - K[2])/K[1]
+
+scatter(
+    num,pro, 
+    color = "blue", 
+    xticks = 0:25,
+    yticks = 0:10:80,
+    label = ["Profit at optimal number of days"],
+    xlabel = ["Number of total products"],
+    ylabel = ["Profit"])
+x = 1:25
+plot!(K[1].*x.+K[2], label = "Regression")
+
+# Number of products and makespan
+# Calculating slope and intersection for (num, make)
+A = ones(10,2)
+A[:,1] = num
+b = make
+K = inv(transpose(A)*A)*transpose(A)*b
+
+# Function of number of products in five years 
+x = (230*5 - K[2])/K[1]
+
+scatter(
+    num,make, 
+    color = "blue", 
+    xticks = 0:25,
+    yticks = 0:20:350,
+    label = ["Optimal number of days"],
+    xlabel = ["Number of total products"],
+    ylabel = ["Number of work days"])
+x = 1:25
+plot!(K[1].*x.+K[2], label = "Regression")
