@@ -69,9 +69,15 @@ for k in range(0,len(p1_no)):
         #print("X equals: ",X[2])
 print(soltime)
 
-import matplotlib as plt 
+import matplotlib.pyplot as plt 
 x_plot = p1_no + p2_no 
 print(x_plot)
 
+scat = plt.plot(x_plot,soltime,'-')
 plt.scatter(x_plot,soltime)
-
+plt.grid()
+plt.ylabel("Runtime [s]")
+plt.xlabel("Number of total products")
+plt.legend(["Solution time for each optimal value"])
+plt.savefig("Results/Enumeration.png")
+plt.show()
