@@ -1,22 +1,45 @@
-## Enumeration model 
-import numpy as np 
-from itertools import permutations
-import time 
+using Combinatorics
+# A = [1,2,3]
+# n = factorial(length(A))
+# N = 1:n
+# B = permutations(A)
+# p = []
+# for item in B
+#     println(item)
+#     p = push!(p,item)
+# end 
+# println(p)
+p1 = [5, 3, 3, 1, 10]                                                 
+p2 = [10, 5, 3, 2, 10]
 
-p1 = np.array([5, 3, 3, 1, 10])                                                 # Days for each station (step)
-p2 = np.array([10, 5, 3, 2, 10])
+no_1D = 3                                                
+no_2D = 4
 
-no_p1 = 3                                                                       # 1D reflection
-no_p2 = 4                                                                       # 2D reflection (wolter)
+total_jobs = hcat(repeat(p1, inner = (1,no_1D)), repeat(p2, inner =(1,no_2D)))
+println(total_jobs)
+# perms = permutations(total_jobs)
+# P = []
+# for item in perms
+#     P = push!(P,item)
+# end 
+
+function create_perm(procesmatrix)
+    "Creates all permutations for products to be produced"
+    "Input: Procestime-matrix"
+    "Output: Matrix of all permutations"
+    perms = permutations(procesmatrix)
+    P = []
+    for item in perms
+        P = push!(P,item)
+    end 
+    return P 
+end 
+@time create_perm(total_jobs)
 
 
-        
-
-def solve_problem(total_jobs):
+function solve_problem(total_jobs):
         # Describtion 
-        start = time.time()                                                     # Starting timewatch
-        joblist = np.arange(0,len(total_jobs))                                  # Index of all products
-        permutation = list(permutations(joblist))                               # All combinations for index
+        perms = permutations(total_jobs)
         c_max = np.inf                                                          # Number of days can go to infinity, making it possible for the loop to go on
         best_order = np.array([])                                               # Empty array for optimal combination
         for i in permutation:                                                   # Starting loop for every index in each combination
