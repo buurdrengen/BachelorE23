@@ -1,4 +1,5 @@
 using Combinatorics
+using TickTock
 # A = [1,2,3]
 # n = factorial(length(A))
 # N = 1:n
@@ -12,95 +13,88 @@ using Combinatorics
 p1 = [5, 3, 3, 1, 10]                                                 
 p2 = [10, 5, 3, 2, 10]
 
-no_1D = 3                                                
+no_1D = 3                                               
 no_2D = 4
 
-total_jobs = hcat(repeat(p1, inner = (1,no_1D)), repeat(p2, inner =(1,no_2D)))
-println(total_jobs)
-# perms = permutations(total_jobs)
-# P = []
-# for item in perms
-#     P = push!(P,item)
-# end 
+all_jobs = hcat(repeat(p2, inner = (1,no_2D)), repeat(p1, inner =(1,no_1D)))
 
-function create_perm(procesmatrix)
-    "Creates all permutations for products to be produced"
-    "Input: Procestime-matrix"
-    "Output: Matrix of all permutations"
-    perms = permutations(procesmatrix)
-    P = []
-    for item in perms
-        P = push!(P,item)
-    end 
-    return P 
+println(solve_problem(all_jobs))
+
+function compute_perms(joblist)
+        P = []
+        perms = permutations(joblist)
+        for item in perms
+             P = push!(P,item)
+        end 
+        return P   
 end 
-@time create_perm(total_jobs)
 
-
-function solve_problem(total_jobs):
-        # Describtion 
-        perms = permutations(total_jobs)
-        c_max = np.inf                                                          # Number of days can go to infinity, making it possible for the loop to go on
-        best_order = np.array([])                                               # Empty array for optimal combination
-        for i in permutation:                                                   # Starting loop for every index in each combination
-            current_c_max = compute_makespan(total_jobs, i)                     # Computing makespan in each combination
-            if current_c_max < c_max:                                           # If the makespan in the current combination is better than the last optimal combination
-                c_max = current_c_max                                           # The optimal number of days is overwritten with current makespan
-                best_order = i                                                  # Saving optimal combination
-                print(c_max, best_order)                                        # Printing optimal number of days and combination 
-        c_max = c_max + 60                                                      # Adding step 0 (activations days)
-        end = time.time()                                                       # Stopping time watch
-        runtime = end - start                                                   # Calculating computationtime 
-        print("Time taken to run is: ", runtime, "seconds")
-        return best_order, c_max, runtime
+function solve_problem(total_jobs)
+        tick()
+        joblist = collect(1:size(total_jobs)[2])
+        #println(joblist)
+        P = compute_perms(joblist)
+        c_max = 10000                                                         
+        best_order = []
+        for i in P
+                #println("i = ",i)
+                current_c_max = compute_makespan(total_jobs, i)
+                if current_c_max < c_max
+                        c_max = current_c_max
+                        best_order = i
+                        println(c_max, best_order)
+                end 
+        end                                
+        c_max = c_max + 60
+        elapsed = tock()                                                       
+        return best_order, c_max, elapsed
+end 
     
-def compute_makespan(total_jobs, permutation):
+function compute_makespan(total_jobs, permutation)
         "Compute makespan for CHEXS production line "
         "Input: Matrix of products and permutation list "
         "Output: Makespan in days "
-        first_row = np.sum(all_jobs[permutation[0]])
+        first_row = sum(all_jobs[:,permutation[1]])
+        first_val = all_jobs[1,permutation[1]]
+        #println("first row = ",first_row)
         next_finish = first_row
-        for j in permutation[1:]:
-                next_row = np.sum(all_jobs[j][0:4]) + all_jobs[permutation[j-1]][0]
-                if next_row < first_row:
-                      next_finish = next_finish + all_jobs[permutation[j]][-1]
-                elif next_row > first_row: 
-                      next_finish = next_finish + (next_row-first_row) + all_jobs[permutation[j]][-1]
-                else:
-                      next_finish = next_finish + all_jobs[permutation[j]][-1]
+        for j in permutation[2:end]
+                #println("j = ",j)
+                next_row = sum(all_jobs[1:4,j]) + first_val
+                #println("next_row = ",next_row)
+                if next_row < first_row
+                        next_finish = next_finish + all_jobs[end,permutation[j]]
+                        #println("next_finish1 = ", next_finish)
+                elseif next_row > first_row
+                        next_finish = next_finish + (next_row - first_row) + all_jobs[end,permutation[j]]
+                        #println("next_finish2 = ", next_finish)
+                else 
+                        next_finish = next_finish + all_jobs[end,permutation[j]]
+                        #println("next_finish3 = ", next_finish)
+                end 
                 first_row = next_finish
-        makespan = next_finish                                                                        
+        end 
+        makespan = next_finish
+        #println("makespan = ",makespan)                                                                        
         return makespan
-                                             
+end 
 
-p1_no = np.array([1,2,3,4])
-p1_no = p1_no.astype(int)
-p2_no = np.ceil(p1_no*4/3)
-p2_no = p2_no.astype(int)
+
+p1_no = [1,2,3,4,5,6,7]
+p2_no = Int.(ceil.(p1_no*4/3))
 
 
 #all_jobs = np.concatenate([np.tile(p2,(no_p2,1)),np.tile(p1,(no_p1,1))])        # Colleting all products in one array
 #print(np.shape(all_jobs))
 
-soltime = np.array([])
-for k in range(0,len(p1_no)):
+soltime = []
+for k in range(1,length(p1_no))
         #print(k)
-        all_jobs = np.concatenate([np.tile(p2,(p2_no[k],1)),np.tile(p1,(p1_no[k],1))])
+        all_jobs = hcat(repeat(p2, inner = (1,p2_no[k])), repeat(p1, inner =(1,p1_no[k])))
         #print(all_jobs)
         X = solve_problem(all_jobs)
-        soltime = np.append(soltime,X[2])
+        soltime = append!(soltime,X)
         #print("X equals: ",X[2])
+end
 print(soltime)
 
-import matplotlib.pyplot as plt 
-x_plot = p1_no + p2_no 
-print(x_plot)
-
-scat = plt.plot(x_plot,soltime,'-')
-plt.scatter(x_plot,soltime)
-plt.grid()
-plt.ylabel("Runtime [s]")
-plt.xlabel("Number of total products")
-plt.legend(["Solution time for each optimal value"])
-plt.savefig("Results/Enumeration.png")
-plt.show()
