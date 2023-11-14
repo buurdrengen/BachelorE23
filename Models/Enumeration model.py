@@ -9,9 +9,6 @@ p2 = np.array([10, 5, 3, 2, 10])
 no_p1 = 3                                                                       # 1D reflection
 no_p2 = 4                                                                       # 2D reflection (wolter)
 
-
-        
-
 def solve_problem(total_jobs):
         # Describtion 
         start = time.time()                                                     # Starting timewatch
@@ -19,7 +16,8 @@ def solve_problem(total_jobs):
         permutation = list(permutations(joblist))                               # All combinations for index
         c_max = np.inf                                                          # Number of days can go to infinity, making it possible for the loop to go on
         best_order = np.array([])                                               # Empty array for optimal combination
-        for i in permutation:                                                   # Starting loop for every index in each combination
+        for i in permutation:
+            print("i = ",i)                                                   # Starting loop for every index in each combination
             current_c_max = compute_makespan(total_jobs, i)                     # Computing makespan in each combination
             if current_c_max < c_max:                                           # If the makespan in the current combination is better than the last optimal combination
                 c_max = current_c_max                                           # The optimal number of days is overwritten with current makespan
@@ -37,8 +35,12 @@ def compute_makespan(total_jobs, permutation):
         "Output: Makespan in days "
         first_row = np.sum(all_jobs[permutation[0]])
         next_finish = first_row
+        print("next_finish = ",next_finish)
         for j in permutation[1:]:
+                print("j = ",j)
+                print("perm[j-1] = ", permutation[j-1])
                 next_row = np.sum(all_jobs[j][0:4]) + all_jobs[permutation[j-1]][0]
+                print("next row = ",next_row)
                 if next_row < first_row:
                       next_finish = next_finish + all_jobs[permutation[j]][-1]
                 elif next_row > first_row: 
@@ -46,9 +48,12 @@ def compute_makespan(total_jobs, permutation):
                 else:
                       next_finish = next_finish + all_jobs[permutation[j]][-1]
                 first_row = next_finish
+                print("first row = ",first_row)
         makespan = next_finish                                                                        
         return makespan
-                                             
+all_jobs = np.concatenate([np.tile(p2,(no_p2,1)),np.tile(p1,(no_p1,1))])
+print(np.sum(all_jobs[5][0:4]) + all_jobs[2][0])
+solve_problem(all_jobs)
 
 p1_no = np.array([1,2,3,4])
 p1_no = p1_no.astype(int)
