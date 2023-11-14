@@ -82,8 +82,9 @@ end
 print(soltime)
 xax = p1_no+p2_no
 print(xax)
-using Plots
 
+#Plotting 
+using Plots
 sol_time_plot = scatter(
     xax,soltime, 
     color = "green", 
