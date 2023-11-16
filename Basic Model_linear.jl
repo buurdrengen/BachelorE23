@@ -8,7 +8,7 @@ m = Model(Gurobi.Optimizer);
 
 @variable(m, X[1:2] >= 0) 
 
-@objective(m, Max, 1.8*X[1] + 3*X[2]) 
+@objective(m, Max, 1.80*X[1] + 3.01*X[2]) 
 
 @constraint(m, 5*X[1] + 10*X[2] <= 230)
 @constraint(m, 3*X[1] + 5*X[2] <= 230) 
