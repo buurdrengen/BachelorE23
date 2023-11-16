@@ -2,7 +2,8 @@
 
 using JuMP
 using Gurobi
-
+using Plots
+using MTH229
 m = Model(Gurobi.Optimizer); 
 
 @variable(m, X[1:2] >= 0) 
@@ -22,5 +23,6 @@ optimize!(m)
 
 println("Objective value: ",JuMP.objective_value(m))
 println(solution_summary(m; verbose = true))
- 
+
+
 # latex_formulation(m)

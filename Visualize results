@@ -11,6 +11,7 @@ number_2D = Int.(ceil.(number_1D*4/3))
 p1 = [5, 3, 3, 1, 10]  
 p2 = [10, 5, 3, 2, 10]
 
+
 num = []
 make = []
 pro = []
@@ -22,41 +23,19 @@ for i in 1:size(number_1D)[1]
     pro = append!(pro, profit)
     sol = append!(sol, sol_time)
 end 
-println(num)
-println(make)
-println(pro)
-println(sol)
 
-# Number of products and makespan
 # Calculating slope and intersection for (num, make)
 A = ones(length(number_1D),2)
 A[:,1] = num
 b = make
 K = inv(transpose(A)*A)*transpose(A)*b
 
-# Function of number of products in five years 
-num_products = (230*5 - K[2])/K[1]
+# Calculating slope and intersection for (num, pro)
+A1 = ones(length(number_1D),2)
+A1[:,1] = num
+b1 = pro
+K1 = inv(transpose(A1)*A1)*transpose(A1)*b1
 
-product_makespan = scatter(
-    num,make, 
-    color = "blue", 
-    # xticks = 0:110,
-    # yticks = 0:20:1150,
-    xlabel = "Number of total products",
-    ylabel = "Makespan [Days]",
-    label = "Optimal number of days",
-    fmt = :png)
-x = 1:110
-plot!(K[1].*x.+K[2], label = "",color = "black")
-# scatter!(
-#     [num_products],[230], 
-#     markersize = 8, 
-#     color = "yellow", 
-#     label = "1 work year")
-png(product_makespan,"product_makespan_5_years")
-
-
-# Profit and makespan
 # Calculating slope and intersection for (make, pro)
 A2 = ones(length(number_1D),2)
 A2[:,1] = make
@@ -64,51 +43,63 @@ b2 = pro
 K2 = inv(transpose(A2)*A2)*transpose(A2)*b2
 
 # Function of makespan and profit
-prof = K2[1]*230*5+K2[2]
+prof = K2[1]*230+K2[2]
 
-makespan_profit = scatter(
-    make,pro, 
+# Function of number of products in five years 
+num_products = (230 - K[2])/K[1]
+
+# Plot
+product_makespan = scatter(
+    num[1:10],make[1:10], 
     color = "blue", 
-    # xticks = 0:20:350,
-    # yticks = 0:5:270,
-    label = "Optimal makespan",
-    xlabel = "Makespan [Days]",
-    ylabel = "Profit [Million DKK]",
-    fmt = :png)
-x = 1:230*5
-plot!(K2[1].*x.+K2[2], color = "black", label = "")
-# scatter!([230],[prof], markersize = 8, color = "yellow", label = "1 work year")
-png(makespan_profit,"makespan_profit_5_years")
-
-# Number of products and profit
-# Calculating slope and intersection for (num, pro)
-A1 = ones(length(number_1D),2)
-A1[:,1] = num
-b1 = pro
-K1 = inv(transpose(A1)*A1)*transpose(A1)*b1
-
-n = (prof - K1[2])/K1[1]
-
-Products_profit = scatter(
-    num,pro, 
-    color = "blue", 
-    # xticks = 0:50,
-    # yticks = 0:5:270,
+    xticks = 0:25,
+    yticks = 0:30:250,
     xlabel = "Number of total products",
-    ylabel = "Profit [Millions DKK]",
-    label = "Profit at optimal number of days",
+    ylabel = "Makespan [Days]",
+    label = "Production time",
+    title = "Flow shop model in 5 years",
+    ylimits=(0,250),
+    gridlinewidth=3,
+    legend=:topleft,
+    fmt = :png)
+x = 1:25
+plot!(K[1].*x.+K[2], label = "",color = "blue")
+twin = twinx()
+scatter!(twin, num[1:10], pro[1:10], xticks = 0:25, yticks = 0:5:65, color = "red", label= "Profit", ylabel = "Profit [Millions DKK]", legend=:bottomright)
+plot!(twin,K1[1].*x.+K1[2],  color = "red", label = "")
+scatter!(
+    [num_products],[230], 
+    markersize = 5, 
+    color = "yellow", 
+    label = "1 work year")
+scatter!(
+    twin,[num_products],[prof], 
+    markersize = 5, 
+    color = "yellow", 
+    label = "1 work year")
+png(product_makespan,"flow_shop_model_graph")
+
+# 5 years
+product_makespan = scatter(
+    num,make, 
+    color = "blue", 
+    xticks = 0:10:110,
+    yticks = 0:230:1150,
+    xlabel = "Number of total products",
+    ylabel = "Makespan [Days]",
+    label = "Production time",
+    title = "Flow shop model in 5 years",
+    ylimits=(0,1150),
+    gridlinewidth=3,
+    legend=:topleft,
     fmt = :png)
 x = 1:110
-plot!(
-    K1[1].*x.+K1[2],  
-    color = "black", 
-    label = "")
-# scatter!(
-#     [n],[prof], 
-#     markersize = 8, 
-#     color = "yellow", 
-#     label = "Optimal number of products in 1 work year")
-png(Products_profit,"products_profit5_years.png")
+plot!(K[1].*x.+K[2], label = "",color = "blue")
+twin = twinx()
+scatter!(twin, num, pro, xticks = 0:110, yticks = 0:50:250, color = "red", label= "Profit", ylabel = "Profit [Millions DKK]", legend=:bottomright)
+plot!(twin,K1[1].*x.+K1[2],  color = "red", label = "")
+png(product_makespan,"flow_shop_model_graph_5years")
+
 
 # Solution time
 sol_plot = scatter(
@@ -121,3 +112,6 @@ sol_plot = scatter(
     label = "Solution time for each optimal value",
     fmt = :png)
 png(sol_plot,"solution_time_5_years.png")
+
+
+

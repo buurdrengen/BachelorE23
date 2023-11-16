@@ -3,9 +3,9 @@ using Gurobi
 using Plots
 
 model = Model(Gurobi.Optimizer); 
-total=108
-number_1D = floor(3*total/7)
-number_2D = Int.(ceil.(number_1D*4/3))
+total=14
+number_1D = Int.((3*total/7))
+number_2D = Int.((number_1D*4/3))
 
 p1 = [5, 3, 3, 1, 10]  
 p2 = [10, 5, 3, 2, 10]

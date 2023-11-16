@@ -85,8 +85,8 @@ print(xax)
 
 #Plotting 
 using Plots
-sol_time_plot = scatter(
-    xax,soltime, 
+sol_time_plot = plot(
+    xax,soltime; marker=(:circle,5), 
     color = "green", 
     # xticks = 0:50,
     # yticks = 0:0.01:3,
