@@ -1,5 +1,8 @@
 using DelimitedFiles
 function julia_translate_z(filename, index)
+    "Translate the matrix z from the flow-shop function to an order"
+    "Input: File containing the matrix z, number of 1D products"
+    "Output: Order of products as [1D,2D] instead of 1's and 0's "
 
     z_opt = readdlm(filename, skipstart =4) #Reading z-file
 

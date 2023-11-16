@@ -4,15 +4,15 @@ using Gurobi
 
 model = Model(Gurobi.Optimizer); 
 
-J1 = 4
-J2 = 5
+J1 = 3 #Number of 1D products
+J2 = 4 #Number of 2D products
 
-p1 = [5, 3, 3, 1, 10] 
-p2 = [10, 5, 3, 2, 10]
-p3 = [10, 5, 5, 2, 10]
-p4 = [5, 1, 1, 2, 2, 1, 10]
-p5 = [10, 1, 1, 4, 4, 2, 10]
-p = hcat(repeat(p4, inner = (1,J1)), repeat(p5, inner =(1,J2)))
+p1 = [5, 3, 3, 1, 10] #Original process time 1D product
+p2 = [10, 5, 3, 2, 10] #Original process time 2D product
+p3 = [10, 5, 5, 2, 10] #Changed process time station 3, 2D product
+p4 = [5, 1, 1, 2, 2, 1, 10] #Extra station 1D product
+p5 = [10, 1, 1, 4, 4, 2, 10] #Extra station 2D product
+p = hcat(repeat(p4, inner = (1,J1)), repeat(p5, inner =(1,J2))) #Use p1 and p3 for changed process time and p4 and p5 for extra stations
 m = 1:length(p4) # index k
 M = length(p4)
 n = 1:(J1+J2) # index i og j
@@ -53,25 +53,14 @@ R = 1:length(m)-1
 
 K1 = 1:length(m)-1
 R2 = 1:length(m)-1
-J1 = 1:length(n)
-#@constraint(model, [k in K1], y[1,k] == 0)
+J5 = 1:length(n)
+
 @constraint(model, [j in n], x[j,1] == 0)
 M1 = 1000
-@constraint(model, [j in J1, r in R2], x[j,r + 1] <= M1*q[j,r])
-@constraint(model, [j in J1, r in R2], y[j,r] <= M1*(1-q[j,r]))
+@constraint(model, [j in J5, r in R2], x[j,r + 1] <= M1*q[j,r])
+@constraint(model, [j in J5, r in R2], y[j,r] <= M1*(1-q[j,r]))
 
-# @constraint(model, [k in K1, j in J], y[j,k+1] >= y[j,k] - x[j,k])
-
-# @constraint(model, y[2,4] == 5)
-
-# @constraint(model, y[3,4] == 2)
-# @constraint(model, y[4,4] == 2)
-# @constraint(model, y[5,4] == 2)
-# @constraint(model, y[6,4] == 2)
-# @constraint(model, y[7,4] == 10)
-
-#@constraint(model, y[2,4] == sum(sum(p[r,i]*z[i,1] for i in n) for r in m) - sum(sum(p[r,i]*z[i,1] for i in n) for r in K1) - sum(p[1,i]*z[i,1] for i in n))
-println(model)
+#println(model) #Can be activated to print the model 
 optimize!(model)
 
 y_opt = value.(y)
@@ -82,25 +71,12 @@ println(y_opt)
 println(x_opt)
 println(z_opt)
 println(q_opt)
-println(sum(x_opt))
-println(sum(y_opt))
 
-f_name = "z-7product.txt"
+f_name = "z-7product.txt" #Create file to obtain the order
 touch(f_name)
 open(f_name,"w") do f
     print(f,z_opt)
 end 
 
-println("Objective value: ",JuMP.objective_value(model))
-println(julia_translate_z("z-7product.txt",4))
-
-#println(solution_summary(model; verbose = true))  
-
-# 
-
-# for k=2:length(m)
-#     for r=1:k-1
-#         cons += sum(p[r,i]*z[i,1] for i in n) 
-#         #print(cons)
-#     end
-# end 
+println("Objective value: ",JuMP.objective_value(model)) #Makespan 
+println(julia_translate_z("z-7product.txt", J1)) #Prints the optimal order 
