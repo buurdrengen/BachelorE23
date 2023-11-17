@@ -2,7 +2,7 @@ RESULTS OF 112 PRODUCTS
 Makespan = Any[1192.0] Days
 Order = ["1D", "1D", "2D", "2D", "2D", "2D", "1D", "1D", "2D", "1D", "2D", "1D", "2D", "1D", "2D", "1D", "2D", "2D", "1D", "2D", "1D", "2D", "1D", "2D", "2D", "2D", "2D", "2D", "2D", "2D", "2D", "2D", "2D", "1D", "2D", "2D", "2D", "2D", "1D", "2D", "1D", "2D", "1D", "2D", "2D", "1D", "2D", "1D", "2D", "1D", "2D", "2D", "1D", "2D", "2D", "1D", "2D", "1D", "1D", "1D", "1D", "1D", "2D", "1D", "1D", "2D", "2D", "2D", "1D", "1D", "2D", "2D", "1D", "2D", "1D", "2D", "2D", "1D", "2D", "1D", "1D", "1D", "2D", "1D", "2D", "1D", "1D", "1D", "1D", "1D", "1D", "2D", "1D", "2D", "1D", "2D", "2D", "2D", "2D", "2D", "2D", "2D", "2D", "2D", "2D", "1D", "2D", "2D", "1D", "1D", "1D", "2D"]
 Profit = 278.4472 Million DKK
-Solution time = Any[4.330999851226807]
+Solution time = Any[4.176000118255615]
 
 X VALUES
 2-dimensional DenseAxisArray{Float64,2,...} with index sets:

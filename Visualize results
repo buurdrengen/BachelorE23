@@ -57,11 +57,7 @@ product_makespan = scatter(
     xlabel = "Number of total products",
     ylabel = "Makespan [Days]",
     label = "Production time",
-<<<<<<< Updated upstream
-    title = "Flow shop model in 5 years",
-=======
     title = "Flow shop model",
->>>>>>> Stashed changes
     ylimits=(0,250),
     gridlinewidth=3,
     legend=:topleft,
@@ -116,9 +112,3 @@ sol_plot = plot(
     label = "Solution time for each optimal value",
     fmt = :png)
 png(sol_plot,"solution_time_5_years.png")
-
-<<<<<<< Updated upstream
-
-
-=======
->>>>>>> Stashed changes
